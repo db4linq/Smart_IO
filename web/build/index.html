@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GPIO</title>
+
+    <link href="bootstrap.css" rel="stylesheet"> 
+    <link href="navbar.css" rel="stylesheet">
+    <link href="switch.css" rel="stylesheet">
+
+    <script src="jquery.js"></script>
+    <script src="bootstrap.js"></script>
+    <script src="switch.js"></script>
+
+    <script language="javascript" type="text/javascript">
+        var websocket;
+        var checked = false;
+
+        $(document).ready(function(){
+            $("[name='my-checkbox']").bootstrapSwitch(); 
+
+            $('input[name="my-checkbox"]').each(function(index){
+                var gpio = $(this).attr('gpio');
+                var s_img = "#img-gpio-" + gpio;
+                var src = ($(this).attr('checked')) ? 'light-on.png' : 'light-off.png';
+                $(s_img).attr('src', src);                
+            });
+
+            $('input[name="my-checkbox"]').on('switchChange.bootstrapSwitch', function(event, state) {
+                //console.log(state); // true | false
+                checked = true;
+                var gpio = $(this).attr('gpio');
+                var s_img = "#img-gpio-" + gpio; 
+                $(s_img).attr('src', "ajax-loader.gif");
+
+                $.getJSON('ajax/gpio', {state: state, gpio: gpio}, function(data) {
+                    console.log(data);
+                    s_img = "#img-gpio-" + data.gpio;
+                
+                    src = data.state ? 'light-on.png' : 'light-off.png';
+                    $(s_img).attr('src', src);
+                });
+            });
+            console.log('System Ready...');
+            function startSocket(){
+                var wsUri = "ws://" + location.host + "/";
+                websocket = new WebSocket(wsUri);
+                websocket.onopen = function(evt) { console.log("CONNECTED");  };
+                websocket.onclose = function(evt) { console.log("DISCONNECTED"); };
+                websocket.onmessage = function(evt) { onMessage(evt) };
+                websocket.onerror = function(evt) { console.log('ERROR: ', evt.data); };
+            }
+
+            function onMessage(evt)
+            {             
+                console.log('Socket Message: ', evt.data);
+                var obj = jQuery.parseJSON( evt.data );
+                if (checked == false){                   
+                    if (obj.Type == 2){
+                        console.log('GPIO State Changed: ', obj);
+
+                        $("#gpio" + obj.gpio).bootstrapSwitch('state', obj.status == 1 ? true : false);
+
+                        s_img = "#img-gpio-" + obj.gpio;
+                        src = obj.status == 1 ? 'light-on.png' : 'light-off.png';
+                        $(s_img).attr('src', src);
+                    }
+                }else{
+                    checked = false;
+                }
+
+                if (obj.Type == 3){ 
+                    var label = $('#mqtt_status');
+                    if (obj.status == true){ 
+                        if (label.hasClass('label-default')){
+                            label.removeClass('label-default');
+                        }
+                        if (label.hasClass('label-danger')){
+                                label.removeClass('label-danger');
+                        }
+                        label.addClass('label-success');
+                        label.html('Connected');
+                    }else{
+                        label.removeClass('label-success');
+                        label.addClass('label-danger');
+                        label.html('Disconnected');
+                    }
+                }
+            }
+
+            function doSend(message)
+            {
+                websocket.send(message);
+            }
+
+            startSocket();
+        });
+    </script>
+
+</head>
+
+<body>
+
+<div class="container">
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">SMART IO</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li  class="active"><a href="/">Home</a></li> 
+                    <li><a href="/network">Network</a></li>
+                    <li><a href="/config">Config</a></li> 
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+    </nav>
+    <!-- Main component for a primary marketing message or call to action -->
+    <div class="jumbotron">
+        <h1>SMART IO</h1>
+        <p>GPIO STATUS [{device_id}]</p>
+        <div class="row marketing">
+            <div class="col-lg-6">
+                <h3>Server Status</h3>
+                <p><span id="mqtt_status" class="label {label_class}">{status}</span></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="gpio4">GPIO4:</label>                   
+                    <input type="checkbox" class="col-sm-9"
+                                gpio="4" 
+                                id="gpio4" 
+                                data-on-color="success"
+                                data-off-color="warning"
+                                data-size="large"
+                                name="my-checkbox" {checked4}> 
+                       
+                    <div class="col-sm-offset-4 col-sx-offset-4" style="padding-top: 10px;">
+                        <image     
+                            id="img-gpio-4" 
+                            src="light-off.png">
+                    </div>
+                </div>
+            </div>
+        </div> 
+            
+        <div class="col-sm-3">
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="gpio13">GPIO13:</label>                   
+                    <input type="checkbox" class="col-sm-9"
+                                gpio="13" 
+                                id="gpio13" 
+                                data-on-color="success"
+                                data-off-color="warning"
+                                data-size="large"
+                                name="my-checkbox" {checked13}> 
+                       
+                    <div class="col-sm-offset-4 col-sx-offset-4" style="padding-top: 10px;">
+                        <image     
+                            id="img-gpio-13" 
+                            src="light-off.png">
+                    </div>
+                </div>
+            </div>
+        </div> 
+        <div class="col-sm-3">
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="gpio12">GPIO12:</label>                   
+                    <input type="checkbox"  class="col-sm-9"
+                                gpio="12" 
+                                id="gpio12" 
+                                data-on-color="success"
+                                data-off-color="warning"
+                                data-size="large"
+                                name="my-checkbox" {checked12}> 
+                       
+                    <div class="col-sm-offset-4 col-sx-offset-4" style="padding-top: 10px;">
+                        <image id="img-gpio-12" src="light-off.png">
+                    </div>
+                </div>
+            </div>
+        </div>   
+        <div class="col-sm-3">
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="gpio14">GPIO14:</label>                   
+                    <input type="checkbox" class="col-sm-9"
+                                gpio="14" 
+                                id="gpio14" 
+                                data-on-color="success"
+                                data-off-color="warning"
+                                data-size="large"
+                                name="my-checkbox" {checked14}> 
+                       
+                    <div class="col-sm-offset-4 col-sx-offset-4" style="padding-top: 10px;">
+                        <image id="img-gpio-14" src="light-off.png">
+                    </div>
+                </div>
+            </div>
+        </div>                   
+    </div>   
+    </div>
+
+</div> <!-- /container -->
+
+</body>
+</html>

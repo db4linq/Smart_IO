@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Server Config</title>
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="navbar.css" rel="stylesheet">
+
+    <script src="jquery.js"></script>
+    <script src="bootstrap.js"></script>
+
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function () {
+            ToggleReadonly($('input[checked=checked]').val());
+            $('input[name=mqtt]').on('click', function(){
+                $('input[name=mqtt]').each(function(e){
+                    $(e).removeAttr('checked');
+                })
+                $(this).attr('checked', 'checked');
+                ToggleReadonly($(this).val());
+            })
+        });
+
+        function ToggleReadonly(value){
+            if(value == '0'){
+                $('.form-control').each(function(){
+                    $(this).attr('readonly', 'readonly');
+                })
+            }
+            else
+            {
+                $('.form-control').each(function(){
+                    $(this).removeAttr('readonly');
+                })
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">SMART IO</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Home</a></li> 
+                    <li><a href="/network">Network</a></li>
+                    <li class="active"><a href="/config">Config</a></li> 
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+    </nav>
+    <div class="panel panel-primary">
+        <div class="panel-heading">Board Config</div>
+        <div class="panel-body">
+            <form class="form-horizontal" role="form" method="post">
+                <div class="row">
+                    <div class="col-md-6 col-sm-8 col-md-offset-3 col-sm-offset-2">
+                        <div class="alert alert-warning" role="alert">
+                            <span>Changes will be applied after reboot</span>
+                        </div>
+                        <div class="page-header"><h4>Server Config</h4></div>
+
+                        <div class="form-group">
+                                <label class="control-label col-sm-4">Server setting:</label>
+                                <div class="col-sm-8">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="mqtt" value="1" {mqtton}>
+                                            Connect to server
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="mqtt" value="0" {mqttoff}>
+                                            Local only
+                                        </label>
+                                    </div>
+                                </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="user_name">User Name:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" 
+                                	id="user_name" 
+                                	name="user_name"
+                                	placeholder="Enter mqtt user name"
+                                	value="{user_name}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="password">Password:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" 
+                                	id="password" 
+                                	name="password"
+                                	placeholder="Enter mqtt user password"
+                                	value="{password}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="broker">MQTT Broker:</label>
+                            <div class="col-sm-8">
+                                <input required type="text" class="form-control" 
+                                	id="broker"
+                                	name="broker"
+                                	placeholder="Enter MQTT Broker"  
+                                	value="{broker}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="port">Broker Port:</label>
+                            <div class="col-sm-8">
+                                <input required type="text" class="form-control" 
+                                	id="port" 
+                                	name="port"
+                                	placeholder="Enter Broker Port" 
+                                	value="{port}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="interval">Update Interval (Sec.):</label>
+                            <div class="col-sm-8">
+                                <input required type="number" class="form-control" 
+                                	id="interval" 
+                                	name="interval"
+                                	placeholder="Enter Update Interval" 
+                                	value="{interval}">
+                            </div>
+                        </div>
+
+						<div class="page-header"><h4>Device Token</h4></div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="token">Device Token:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" 
+                                	id="token" 
+                                	name="token"
+                                	placeholder="Enter Device Token"
+                                	value="{token}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="gpio4">GPIO4 ID:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" 
+                                	id="gpio4" 
+                                	name="gpio4"
+                                	placeholder="Enter GPIO5 ID" 
+                                	value="{gpio4}">
+                            </div>
+                        </div>                                                 
+                        
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="gpio12">GPIO12 ID:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" 
+                                	id="gpio12" 
+                                	name="gpio12"
+                                	placeholder="Enter GPIO12 ID"
+                                	value="{gpio12}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="gpio13">GPIO13 ID:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" 
+                                	id="gpio13" 
+                                	name="gpio13"
+                                	placeholder="Enter GPIO13 ID" 
+                                	value="{gpio13}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="gpio14">GPIO14 ID:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" 
+                                	id="gpio14" 
+                                	name="gpio14"
+                                	placeholder="Enter GPIO14 ID" 
+                                	value="{gpio14}">
+                            </div>
+                        </div>                                                                                                                        
+
+                        <div class="form-group">
+	                    	<div class="col-sm-offset-4 col-sm-8">
+	                        	<button  type="submit" class="btn btn-primary">Save</button>
+	                        </div>
+						</div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> <!-- /container -->
+
+<script src="jquery.js"></script>
+<script src="bootstrap.js"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Network Settings</title> 
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap.css" rel="stylesheet"> 
+    <!-- Custom styles for this template -->
+    <link href="navbar.css" rel="stylesheet">
+    
+	<script src="jquery.js"></script>
+	<script src="bootstrap.js"></script>
+
+</head>
+<script>
+    $(document).ready(function () {
+        ToggleReadonly($('input[checked=checked]').val());
+        $('input[name=dhcp]').on('click', function(){
+            $('input[name=dhcp]').each(function(e){
+                $(e).removeAttr('checked');
+            })
+            $(this).attr('checked', 'checked');
+            ToggleReadonly($(this).val());
+        })
+    });
+
+    function ToggleReadonly(value){
+        if(value == '1'){
+            $('.client-address').each(function(){
+                $(this).attr('readonly', 'readonly');
+            })
+        }
+        else
+        {
+            $('.client-address').each(function(){
+                $(this).removeAttr('readonly');
+            })
+        }
+    }
+</script>
+<body>
+
+<div class="container">
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">SMART IO</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Home</a></li>  
+                    <li class="active"><a href="/network">Network</a></li>
+                    <li><a href="/config">Config</a></li> 
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+    </nav>
+    <div class="panel panel-primary">
+        <div class="panel-heading">Network Config</div>
+        <div class="panel-body">
+
+                <form class="form-horizontal" role="form" method="post" action="">
+                    <div class="row">
+
+                        <div class="col-md-6 col-sm-8 col-md-offset-3 col-sm-offset-2">
+                            <div class="alert alert-warning" role="alert">
+                                <span>Changes will be applied after reboot</span>
+                            </div>
+                            <div class="page-header"><h3>Network Config</h3></div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-4" for="ssid">Name (SSID):</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="ssid" name="ssid">
+                                        {option}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-4" for="password">Password:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control"
+                                           id="password"
+                                           name="password"
+                                           value="{password}"
+                                           placeholder="Enter Password">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Use DHCP:</label>
+                                <div class="col-sm-8">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="dhcp" value="1" {dhcpon}>
+                                            Yes
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="dhcp" value="0" {dhcpoff}>
+                                            No
+                                        </label>
+                                    </div>
+                                    <p class="help-block">Use DHCP or Statis IP</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-4" for="ip">IP Address:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control client-address"
+                                           id="ip"
+                                           name="ip"
+                                           value="{ip}"
+                                           placeholder="Enter IP Address">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-4" for="netmask">Network Mask:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control client-address"
+                                           id="netmask"
+                                           name="netmask"
+                                           value="{netmask}"
+                                           placeholder="Enter Network Mask">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-4" for="gateway">Gateway:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control client-address"
+                                           id="gateway"
+                                           name="gateway"
+                                           value="{gateway}"
+                                           placeholder="Enter Gateway">
+                                </div>
+                            </div>
+                            <div class="form-group">
+	                            <div class="col-sm-offset-4 col-sm-8">
+	                                <button  type="submit" class="btn btn-primary">Save</button>
+	                            </div>
+							</div>
+                        </div>
+                    </div>
+                </form>
+
+        </div>
+    </div>
+
+</div> <!-- /container -->
+</body>
+</html>

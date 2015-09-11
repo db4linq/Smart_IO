@@ -483,7 +483,9 @@ void startServers()
 		Serial.println("======================\r\n");
 		startFTP();
 		startWebServer();
+#ifdef LCD_DISPLAY
 		lcdStartServers();
+#endif
 	}
 }
 

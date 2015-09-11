@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-	#define LCD_DISPLAY
+	//#define LCD_DISPLAY
 
 	// UART config
 	#define SERIAL_BAUD_RATE 115200

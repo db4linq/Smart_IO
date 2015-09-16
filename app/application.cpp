@@ -1,4 +1,6 @@
-
+#include <stdlib.h>
+#include <stdio.h>
+#include <exception>
 #include <user_config.h>
 #include <SmingCore/SmingCore.h>
 #include <DeviceConfig.h>
@@ -8,15 +10,13 @@
 #include <Libraries/LiquidCrystal/LiquidCrystal_I2C.h>
 
 #define IP_STATE   0
-#define IO_STATE   1
+#define TIME_STATE   1
 
 #endif
+#include "NtpClientDelegateDemo.h"
 
 //#define WIFI_SSID "see_dum" // Put you SSID and Password here
 //#define WIFI_PWD "0863219053"
-
-//#define MQTT_USER	"3EB95B23"
-//#define MQTT_PWD	"CE564FC1"
 
 #define DEBUG_PRINT(x) {Serial.println(x);}
 #define DEBUG_PRINTLN() {Serial.println();}
@@ -31,15 +31,16 @@ bool mqttStatus;
 Timer procTimer;
 Timer statusTimer;
 Timer restartTimer;
+Timer systemTime;
 
 uint32_t getChipId(void);
 void publishMessage();
 void onMessageReceived(String topic, String message); // Forward declaration for our callback
 // MQTT client
-// For quickly check you can use: http://www.hivemq.com/demos/websocket-client/ (Connection= test.mosquitto.org:8080)
 MqttClient *mqtt;
 HttpServer *server;
 FTPServer *ftp;
+ntpClientDemo *ntp;
 BssList networks;
 bool state = true;
 
@@ -101,7 +102,34 @@ void lcdConnectOk()
 	lcd.setCursor(0,1);
 	lcd.print("  "+WifiStation.getIP().toString()+"  ");
 }
+
+void lcdDisplayTime()
+{
+	char buf[64];
+	DateTime _dateTime = SystemClock.now();
+
+	lcd.setCursor(6, 0);
+	sprintf(buf, "%02d/%02d/%d", _dateTime.Day, _dateTime.Month + 1, _dateTime.Year + 543);
+	lcd.print(String(buf));
+
+	lcd.setCursor(6, 1);
+	memset(buf, 0, 64);
+	sprintf(buf, "%02d:%02d:%02d", _dateTime.Hour, _dateTime.Minute, _dateTime.Second);
+	lcd.print(String(buf));
+}
+
+void startDisplayTime(){
+	systemTime.initializeMs(1000, lcdDisplayTime).start();
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("DATE:           ");
+	lcd.setCursor(0, 1);
+	lcd.print("TIME:         ");
+}
+
 #endif
+
+
 
 #ifndef LCD_DISPLAY
 void blink()
@@ -153,7 +181,9 @@ void restartMqttConnection()
 		mqtt->subscribe(setTopic);
 		procTimer.initializeMs(BrokerSettings.updateInterval * 1000, publishMessage).start();
 #ifdef LCD_DISPLAY
-		lcdConnectOk();
+		startDisplayTime();
+		systemTime.initializeMs(1000, lcdDisplayTime).start();
+		//lcdConnectOk();
 #endif
 	}else{
 		DEBUG_PRINT("MQTT client inactive...");
@@ -169,7 +199,8 @@ void publishMessage()
 		delete mqtt;
 		procTimer.stop();
 		Serial.println("MQTT client disconnected!");
-		restartTimer.initializeMs(10000, restartMqttConnection).startOnce();
+		restartTimer.initializeMs(30000, restartMqttConnection).startOnce();
+		systemTime.stop();
 		Serial.println("MQTT client restarting...");
 #ifdef LCD_DISPLAY
 		lcdMqttDisconnect();
@@ -324,6 +355,13 @@ void onNetworkConfig(HttpRequest &request, HttpResponse &response)
 	response.sendTemplate(tmpl); // will be automatically deleted
 }
 
+void onTimeConfig(HttpRequest &request, HttpResponse &response){
+	TemplateFileStream *tmpl = new TemplateFileStream("time.html");
+	auto &vars = tmpl->variables();
+
+	response.sendTemplate(tmpl); // will be automatically deleted
+}
+
 void onBrokerConfig(HttpRequest &request, HttpResponse &response)
 {
 	DEBUG_PRINT("onBrokerConfig..");
@@ -455,6 +493,7 @@ void startWebServer()
 	server->listen(80);
 	server->addPath("/", onIndex);
 	server->addPath("/network", onNetworkConfig);
+	server->addPath("/time", onTimeConfig);
 	server->addPath("/config", onBrokerConfig);
 	server->addPath("/ajax/gpio", onAjaxGpio);
 	server->setDefaultHandler(onFile);
@@ -494,8 +533,10 @@ void connectOk()
 	startFTP();
 	startWebServer();
 	startMQTT();
+	ntp = new ntpClientDemo("pool.ntp.org");
 #ifdef LCD_DISPLAY
 	lcdConnectOk();
+	restartTimer.initializeMs(30 * 1000, startDisplayTime).startOnce();
 #endif
 #ifndef LCD_DISPLAY
 	statusTimer.initializeMs(1000, blink).start();
@@ -550,6 +591,7 @@ void init()
 {
 	Serial.begin(SERIAL_BAUD_RATE); // 115200 by default
 	Serial.systemDebugOutput(false); // Debug output to serial
+	SystemClock.setTimeZone(7);
 
 #ifdef LCD_DISPLAY
 	attachInterrupt(INT_PIN, interruptHandler, CHANGE);
@@ -577,6 +619,9 @@ void init()
 	NetworkSettings.load();
 	if (NetworkSettings.exist())
 	{
+		Serial.println("SSID: " + NetworkSettings.ssid);
+		Serial.println("PWD: " + NetworkSettings.password);
+
 		WifiStation.config(NetworkSettings.ssid, NetworkSettings.password);
 		if (!NetworkSettings.dhcp && !NetworkSettings.ip.isNull())
 			WifiStation.setIP(NetworkSettings.ip, NetworkSettings.netmask, NetworkSettings.gateway);

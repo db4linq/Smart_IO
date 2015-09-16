@@ -1,0 +1,367 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Network Settings</title> 
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap.css" rel="stylesheet"> 
+    <!-- Custom styles for this template -->
+    <link href="navbar.css" rel="stylesheet">
+    <link href="timepicker.css" rel="stylesheet">
+    
+	<script src="jquery.js"></script>
+	<!-- <script src="bootstrap.js"></script> -->
+    <!-- <script src="timepicker.js"></script> -->
+
+</head>
+<script>
+    $(document).ready(function () { 
+
+        ToggleReadonly($('input[checked=checked]').val());
+        $('input[name=dhcp]').on('click', function(){
+            $('input[name=dhcp]').each(function(e){
+                $(e).removeAttr('checked');
+            })
+            $(this).attr('checked', 'checked');
+            ToggleReadonly($(this).val());
+        })
+    });
+
+    function ToggleReadonly(value){
+        if(value == '1'){
+            $('.client-address').each(function(){
+                $(this).attr('readonly', 'readonly');
+            })
+        }
+        else
+        {
+            $('.client-address').each(function(){
+                $(this).removeAttr('readonly');
+            })
+        }
+    }
+</script>
+<body>
+
+<div class="container">
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">SMART IO</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Home</a></li>  
+                    <li class="active"><a href="/time">System Time</a></li>  
+                    <li><a href="/network">Network</a></li>
+                    <li><a href="/config">Config</a></li> 
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+    </nav>
+    <div class="panel panel-primary">
+        <div class="panel-heading">Network Config</div>
+        <div class="panel-body">
+
+                <form class="form-horizontal" role="form" method="post" action="">
+
+                    <div class="row">
+                        <div class="col-md-6 col-sm-8 col-md-offset-3 col-sm-offset-2">
+
+                            <div class="alert alert-warning" role="alert">
+                                <span>Changes will be applied after reboot</span>
+                            </div>
+
+
+                            <div style="margin: 5px">
+                            <div class="page-header"><h3>Channel 1</h3></div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Start:</label>
+                                <div class="col-sm-4"> 
+                                    <div class="form-group"> 
+                                        <input type="number" class="form-control" 
+                                               id="start_r1_hh"
+                                               name="start_r1_hh"
+                                               value="{start_r1_hh}"
+                                               placeholder="Enter Password">   
+                                    </div> 
+                                    <div class="form-group">
+                                        <input type="number" class="form-control" 
+                                               id="start_r1_mm"
+                                               name="start_r1_mm"
+                                               value="{start_r1_mm}"
+                                               placeholder="Enter Password"> 
+                                    </div>  
+
+
+                                </div>                           
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Stop:</label>
+                                <div class="col-sm-4"> 
+                                    <div class="form-group">                                     
+                                        <input type="number" class="form-control" 
+                                               id="stop_r1_hh"
+                                               name="stop_r1_hh"
+                                               value="{stop_r1_hh}"
+                                               placeholder="Enter Password">  
+                                    </div> 
+                                    <div class="form-group">
+                                        <input type="number" class="form-control" 
+                                               id="stop_r1_mm"
+                                               name="stop_r1_mm"
+                                               value="{stop_r1_mm}"
+                                               placeholder="Enter Password"> 
+                                    </div> 
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Time Setup</label>
+                                <div class="col-sm-4">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="userr1" value="1" {userr1on}>
+                                            ใช่
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="userr1" value="0" {userr1off}>
+                                            ไม่ใช่
+                                        </label>
+                                    </div>
+                                    <p class="help-block">ตั่งเวลาปิด ปิด</p>
+                                </div>
+                            </div>
+                            </div>
+                          
+
+
+                            <div style="margin: 5px">
+                            <div class="page-header"><h3>Channel 2</h3></div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Start:</label>
+                                <div class="col-sm-4">
+                                    <div class="form-group"> 
+                                        <input type="number" class="form-control" 
+                                               id="start_r2_hh"
+                                               name="start_r2_hh"
+                                               value="{start_r2_hh}"
+                                               placeholder="Enter Password">  
+                                    </div> 
+                                    <div class="form-group">
+                                        
+                                        <input type="number" class="form-control" 
+                                               id="start_r2_mm"
+                                               name="start_r2_mm"
+                                               value="{start_r2_mm}"
+                                               placeholder="Enter Password"> 
+                                    </div> 
+                                </div>                           
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Stop:</label>
+                                <div class="col-sm-4">
+                                    <div class="form-group">                                     
+                                        <input type="number" class="form-control" 
+                                               id="stop_r2_hh"
+                                               name="stop_r2_hh"
+                                               value="{stop_r2_hh}"
+                                               placeholder="Enter Password">  
+                                    </div> 
+                                    <div class="form-group" style="margin-top: 5px">
+                                        
+                                        <input type="number" class="form-control" 
+                                               id="stop_r2_mm"
+                                               name="stop_r2_mm"
+                                               value="{stop_r2_mm}"
+                                               placeholder="Enter Password"> 
+                                    </div> 
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Time Setup</label>
+                                <div class="col-sm-4">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="userr2" value="1" {userr2on}>
+                                            ใช่
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="userr2" value="0" {userr2off}>
+                                            ไม่ใช่
+                                        </label>
+                                    </div>
+                                    <p class="help-block">ตั่งเวลาปิด ปิด</p>
+                                </div>
+                            </div>
+                            </div>
+
+
+                            <div style="margin: 5px">
+                            <div class="page-header"><h3>Channel 3</h3></div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Start:</label>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <input type="number" class="form-control" 
+                                               id="start_r3_hh"
+                                               name="start_r3_hh"
+                                               value="{start_r3_hh}"
+                                               placeholder="Enter Password">  
+                                    </div> 
+                                    <div class="form-group">
+                                        
+                                        <input type="number" class="form-control" 
+                                               id="start_r3_mm"
+                                               name="start_r3_mm"
+                                               value="{start_r3_mm}"
+                                               placeholder="Enter Password"> 
+                                    </div>  
+                                </div>                           
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Stop:</label>
+                                <div class=" col-sm-4">
+                                    <div class="form-group">                                     
+                                        <input type="number" class="form-control" 
+                                               id="stop_r3_hh"
+                                               name="stop_r3_hh"
+                                               value="{stop_r3_hh}"
+                                               placeholder="Enter Password">  
+                                    </div> 
+                                    <div class="form-group" style="margin-top: 5px">
+                                        
+                                        <input type="number" class="form-control" 
+                                               id="stop_r3_mm"
+                                               name="stop_r3_mm"
+                                               value="{stop_r3_mm}"
+                                               placeholder="Enter Password"> 
+                                    </div> 
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Time Setup</label>
+                                <div class="col-sm-4">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="userr3" value="1" {userr3on}>
+                                            ใช่
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="userr3" value="0" {userr3off}>
+                                            ไม่ใช่
+                                        </label>
+                                    </div>
+                                    <p class="help-block">ตั่งเวลาปิด ปิด</p>
+                                </div>
+                            </div>
+                            </div>
+                          
+
+
+
+                            <div style="margin: 5px">
+                            <div class="page-header"><h3>Channel 4</h3></div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Start:</label>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <input type="number" class="form-control" 
+                                               id="start_r4_hh"
+                                               name="start_r4_hh"
+                                               value="{start_r4_hh}"
+                                               placeholder="Enter Password">  
+                                    </div> 
+                                    <div class="form-group">
+                                        
+                                        <input type="number" class="form-control" 
+                                               id="start_r4_mm"
+                                               name="start_r4_mm"
+                                               value="{start_r4_mm}"
+                                               placeholder="Enter Password"> 
+                                    </div>  
+                                </div>                           
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Stop:</label>
+                                <div class="col-sm-4">
+
+                                    <div class="form-group">                                     
+                                        <input type="number" class="form-control" 
+                                               id="stop_r4_hh"
+                                               name="stop_r4_hh"
+                                               value="{stop_r4_hh}"
+                                               placeholder="Enter Password">  
+                                    </div> 
+                                    <div class="form-group" style="margin-top: 5px">
+                                        
+                                        <input type="number" class="form-control" 
+                                               id="stop_r4_mm"
+                                               name="stop_r4_mm"
+                                               value="{stop_r4_mm}"
+                                               placeholder="Enter Password"> 
+                                    </div> 
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Time Setup</label>
+                                <div class="col-sm-4">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="userr4" value="1" {userr4on}>
+                                            ใช่
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="userr4" value="0" {userr4off}>
+                                            ไม่ใช่
+                                        </label>
+                                    </div>
+                                    <p class="help-block">ตั่งเวลาปิด ปิด</p>
+                                </div>
+                            </div>
+                            </div>
+
+                             <div style="margin: 5px">
+                                <div class="form-group">
+        	                           <div class="col-sm-offset-4 col-sm-8">
+        	                                <button  type="submit" class="btn btn-primary">Save</button>
+        	                            </div>
+        						</div>
+                            </div>
+
+                        </div>
+                    </div> <!-- end row  -->
+                </form>
+
+        </div>
+    </div>
+
+</div> <!-- /container -->
+</body>
+</html>
